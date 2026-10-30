@@ -1,0 +1,21 @@
+.gradle/
+build/
+app/build/
+.cxx/
+captures/
+engine/app/
+app/src/main/jniLibs/
+local.properties
+*.jks
+*.keystore
+key.properties
+password.txt
+output/
+
+# IDE / tooling (local, not codebase)
+.idea/
+*.iml
+.devin/
+.playwright-mcp/
+__pycache__/
+*.log

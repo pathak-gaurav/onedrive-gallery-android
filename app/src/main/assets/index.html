@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>OneDrive Gallery</title><link rel="stylesheet" href="style.css"><script type="module" src="app.mjs"></script></head>
+<body>
+ <header><span class="logo" aria-hidden="true">▧</span><div><small>ONEDRIVE TOOLS</small><h1>OneDrive Gallery</h1></div><button id="reconnect" hidden>Reconnect</button></header>
+ <main>
+  <p id="notice" role="status" aria-live="polite"></p>
+  <section id="activity" class="card activity" hidden>
+   <div class="row"><span class="live-dot" aria-hidden="true"></span><strong id="activity-message" role="status">Preparing comparison…</strong><button id="stop">Pause</button></div>
+   <div id="scan-stats" class="scan-stats"><div><strong id="cloud-count">0</strong><span>OneDrive files indexed</span></div><div><strong id="local-count">0</strong><span>Phone originals matched</span></div></div>
+   <progress id="progress"></progress><p id="page-progress" class="muted">Your library appears below while the scan runs.</p>
+  </section>
+  <section id="connect" class="card welcome"><span class="hero-icon">☁</span><h2>Connect OneDrive</h2><p>Review duplicate files and compare your phone library with OneDrive.</p><button id="login" class="primary">Sign in to OneDrive</button><button id="reopen-login" hidden>Open Microsoft sign-in</button><p class="muted">Microsoft sign-in opens in your browser. The connector is named Rclone.</p></section>
+  <div id="connected" hidden>
+   <nav role="tablist" aria-label="Tools"><button id="tab-all" role="tab" aria-selected="true">Duplicates</button><button id="tab-folder" role="tab" aria-selected="false">Folder scan</button><button id="tab-phone" role="tab" aria-selected="false">Phone library</button></nav>
+   <section id="folder-controls" class="card" hidden><h2>Scan one folder</h2><div class="row"><button id="folder-up">↑ Parent</button><strong id="folder-path">OneDrive</strong></div><div id="folders" class="folders"></div><button id="scan-folder" class="primary">Scan folder and subfolders</button></section>
+   <section id="phone-controls" class="card phone-controls" hidden>
+    <div class="row"><div class="grow"><h2>Your gallery + OneDrive</h2><p class="muted">Live results. Saved scan progress. No cloud-original downloads for matching.</p></div><button id="compare" class="primary">Compare / continue</button></div>
+    <div class="permission-row"><p id="permission-note" class="muted"></p><button id="permission">Allow gallery access</button></div>
+    <details id="upload-destination"><summary>Upload destination</summary><label>OneDrive folder<input id="upload-folder" value="Pixel 10 Pro uploads" placeholder="OneDrive root" autocomplete="off"></label><button id="browse-upload">Choose folder…</button><label class="check-option"><input id="preserve-albums" type="checkbox" checked> Preserve local album folders</label><label>When a filename already exists<select id="upload-conflict"><option value="fail">Skip and review conflicts</option><option value="rename">Upload a separate copy with a new name</option></select></label><small>Identical originals are skipped. Existing files are never overwritten.</small></details>
+    <details><summary>How files are compared</summary><p>“Not uploaded” means no identical original currently exists in OneDrive. A file uploaded and later deleted may also appear here. During a scan, matches are provisional and unmatched files remain “Checking”.</p><p>All local photos and videos are included, even if Google Photos has backed them up. Cloud-only Google Photos and Drive items are excluded. Google backup status for local files is unavailable.</p></details>
+   </section>
+   <div class="section-heading"><div><h2 id="view-title">Duplicate files</h2><p id="scope" class="muted">Scan for a current view of your OneDrive.</p></div><button id="rescan">Refresh</button></div>
+   <section id="status-chips" class="status-chips" aria-label="Filter phone upload status" hidden>
+    <button data-status="all" aria-pressed="true"><strong>0</strong><span>All local</span></button><button data-status="uploaded" aria-pressed="false"><strong>0</strong><span>Already uploaded</span></button><button data-status="missing" aria-pressed="false"><strong>0</strong><span>Not uploaded</span></button><button data-status="pending" aria-pressed="false"><strong>0</strong><span>Checking</span></button><button data-status="unknown" aria-pressed="false"><strong>0</strong><span>Needs review</span></button>
+   </section>
+   <details id="filters" class="card"><summary>Filter & sort</summary><div class="filters">
+    <label class="search">Name or path<input id="search" type="search" placeholder="Search your results…"></label>
+    <div class="row"><label>File type<select id="type"><option value="all">All files</option><option value="image">Photos</option><option value="video">Videos</option><option value="document">Documents</option><option value="other">Other</option></select></label><label>Min MB<input id="min" type="number" min="0" step="any" placeholder="0"></label><label>Max MB<input id="max" type="number" min="0" step="any" placeholder="Any"></label></div>
+    <div class="row"><label>From date<input id="date-from" type="date"></label><label>Through date<input id="date-to" type="date"></label></div><small>Date taken is used when available, otherwise last modified.</small>
+    <label>Format<select id="format"><option value="all">All formats</option></select></label><label>Sort<select id="sort"><option value="savings">Most space to recover</option><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="size">Largest first</option><option value="smallest">Smallest first</option><option value="copies">Most copies</option><option value="name">Filename A–Z</option></select></label>
+    <label id="cloud-filters">When marking extras, keep<select id="keep"><option value="oldest">Oldest copy</option><option value="newest">Newest copy</option><option value="shortest">Shortest path</option></select></label><label id="phone-filter" hidden>Upload status<select id="status-filter"><option value="all">All local files</option><option value="uploaded">Already uploaded</option><option value="missing">Not uploaded</option><option value="pending">Checking</option><option value="unknown">Needs review</option></select></label><button id="reset-filters">Reset filters</button>
+   </div></details>
+   <section class="actions"><div class="row"><strong id="counts">No scan yet</strong><label id="phone-action-wrap" hidden>Selection action<select id="phone-action"><option value="upload">Upload missing originals</option><option value="remove">Remove matched phone copies</option></select></label></div><div class="row"><button id="mark">Mark extra copies</button><button id="clear">Clear selection</button><button id="review" class="danger" disabled>Review deletion</button></div><small id="selection-note">Selections stay marked across filters in this tab.</small></section>
+   <div id="results" class="results"></div><div id="pagination" class="row pages" hidden><button id="previous">← Previous</button><span id="page-count"></span><button id="next">Next →</button></div>
+  </div>
+  <footer>Local originals only · Vault and shared shortcuts excluded.<br>Cloud photos use thumbnails. Playing a cloud video streams data. PDFs and Office documents open in OneDrive’s browser preview.<br><a href="licenses.html">About & open source licenses</a></footer>
+ </main>
+</body></html>

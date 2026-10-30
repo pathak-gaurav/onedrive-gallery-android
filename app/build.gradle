@@ -1,0 +1,9 @@
+plugins { id 'com.android.application' }
+android {
+ namespace 'com.local.onedrivegallery'
+ compileSdk 36
+ defaultConfig { applicationId 'com.local.onedrivegallery'; minSdk 34; targetSdk 36; versionCode 6; versionName '1.5'; testInstrumentationRunner 'com.local.onedrivegallery.SmokeInstrumentation'; ndk { abiFilters (project.findProperty('testAbi') ?: 'arm64-v8a') } }
+ compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+ buildTypes { release { minifyEnabled false } }
+ packaging { jniLibs { useLegacyPackaging false } }
+}
